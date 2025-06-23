@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { getBugById, getUserById } from '@/lib/mock-data';
 import { Calendar, User, MessageSquare, Edit, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import useBugStore from '@/store/bugStore';
 
 const statusColors = {
   open: 'bg-red-100 text-red-800 border-red-200',
@@ -28,11 +28,11 @@ const priorityColors = {
 };
 
 export default function BugDetailPage() {
-  const params = useParams();
-  const bugId = params.id as string;
-  const bug = getBugById(bugId);
+  const selectedBugId = useBugStore((state) => state.bugNo);
+  const bug = selectedBugId ? getBugById(selectedBugId) : null;
   const [newComment, setNewComment] = useState('');
 
+ 
   if (!bug) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -78,11 +78,11 @@ export default function BugDetailPage() {
               <h1 className="text-3xl font-bold text-gray-900">{bug.title}</h1>
               <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
                 <span>Bug #{bug.id}</span>
-                <span>Created {bug.createdAt.toLocaleDateString()}</span>
-                <span>Updated {bug.updatedAt.toLocaleDateString()}</span>
+                <span>Created {bug.createdAt.toLocaleDateString("en-US")}</span>
+                <span>Updated {bug.updatedAt.toLocaleDateString("en-US")}</span>
               </div>
             </div>
-            <Link href={`/bugs/${bug.id}/edit`}>
+            <Link href={`/bugs/details/edit`}>
               <Button className="mt-4 sm:mt-0">
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Bug
@@ -125,7 +125,7 @@ export default function BugDetailPage() {
                             {commenter?.name || 'Unknown User'}
                           </span>
                           <span className="text-sm text-gray-500">
-                            {comment.createdAt.toLocaleDateString()}
+                            {comment.createdAt.toLocaleDateString("en-US")}
                           </span>
                         </div>
                         <p className="text-gray-700">{comment.content}</p>
@@ -198,7 +198,7 @@ export default function BugDetailPage() {
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Created</h4>
                   <div className="flex items-center space-x-2">
                     <Calendar className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm">{bug.createdAt.toLocaleDateString()}</span>
+                    <span className="text-sm">{bug.createdAt.toLocaleDateString("en-US")}</span>
                   </div>
                 </div>
               </CardContent>

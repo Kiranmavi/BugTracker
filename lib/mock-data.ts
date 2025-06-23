@@ -61,7 +61,7 @@ export const mockUsers: User[] = [
   },
 ];
 
-export const mockBugs: Bug[] = [
+export const                                                                                        mockBugs: Bug[] = [
   {
     id: '1',
     title: 'Login form validation not working correctly',

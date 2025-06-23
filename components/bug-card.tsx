@@ -4,6 +4,8 @@ import { Bug, getUserById } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import useBugStore from '../store/bugStore';
 
 interface BugCardProps {
   bug: Bug;
@@ -26,18 +28,26 @@ const priorityColors = {
 export function BugCard({ bug }: BugCardProps) {
   const assignee = bug.assigneeId ? getUserById(bug.assigneeId) : null;
   const reporter = getUserById(bug.reporterId);
+  const router = useRouter();
+  const setBugNo = useBugStore((state) => state.setBugNo);
+
+  const handleBugsDetails=()=>{
+    setBugNo(bug.id);
+    router.push(`/bugs/details/`);
+  }
 
   return (
     <Card className="hover:shadow-md transition-shadow duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <Link 
-              href={`/bugs/${bug.id}`}
-              className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors line-clamp-2"
+            <div 
+            onClick={handleBugsDetails}
+              // href={`/bugs/${bug.id}`}
+              className="text-lg font-semibold cursor-pointer text-gray-900 hover:text-blue-600 transition-colors line-clamp-2"
             >
               {bug.title}
-            </Link>
+            </div>
             <p className="text-sm text-gray-600 mt-1 line-clamp-2">
               {bug.description}
             </p>
@@ -76,7 +86,7 @@ export function BugCard({ bug }: BugCardProps) {
             )}
             <div className="flex items-center space-x-1">
               <Calendar className="h-4 w-4" />
-              <span>{bug.createdAt.toLocaleDateString()}</span>
+              <span>{bug.createdAt.toLocaleDateString("en-US")}</span>
             </div>
           </div>
           
